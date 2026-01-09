@@ -30,7 +30,7 @@ def create_table(schema):
                 CREATE TABLE IF NOT EXISTS {schema}.{table} (
                     "Video_ID" VARCHAR(11) PRIMARY KEY NOT NULL,
                     "Video_Title" TEXT NOT NULL,
-                    "Uploud_Date" TIMESTAMP NOT NULL,
+                    "Upload_Date" TIMESTAMP NOT NULL,
                     "Duration" VARCHAR(20) NOT NULL,
                     "Video_Views" INT,
                     "Likes_Count" INT,
@@ -43,8 +43,9 @@ def create_table(schema):
                 CREATE TABLE IF NOT EXISTS {schema}.{table} (
                     "Video_ID" VARCHAR(11) PRIMARY KEY NOT NULL,
                     "Video_Title" TEXT NOT NULL,
-                    "Uploud_Date" TIMESTAMP NOT NULL,
+                    "Upload_Date" TIMESTAMP NOT NULL,
                     "Duration" VARCHAR(20) NOT NULL,
+                    "Video_Type" TEXT NOT NULL,
                     "Video_Views" INT,
                     "Likes_Count" INT,
                     "Comments_Count" INT
