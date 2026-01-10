@@ -56,10 +56,10 @@ def create_table(schema):
     conn.commit()
     close_conn_cursor(conn, cur)
     
-def get_video_ids(cur, schema):
+#def get_video_ids(cur, schema):
     
-    cur.execute(f""" SELECT "Video_ID" FROM {schema}.{table} ;""")
-    ids = cur.fetchall() #this will return a LIST of DICTIONARIES
+    #cur.execute(f""" SELECT "Video_ID" FROM {schema}.{table} ;""")
+    #ids = cur.fetchall() #this will return a LIST of DICTIONARIES
     
-    video_ids = [row["Video_ID"] for row in ids] #retrieving only the values from the dictionary
-    return video_ids 
+    #video_ids = [row["Video_ID"] for row in ids] #retrieving only the values from the dictionary
+   # return video_ids 
