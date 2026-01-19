@@ -11,12 +11,13 @@ logger = logging.getLogger(__name__)
 table = "yt_api"
 
 @task
-def staging_table():
+def staging_table(**context):
+    execution_date = context["execution_date"]
     schema = "staging"
     conn, cur = get_conn_cursor()
 
     try:
-        YT_data = load_data()
+        YT_data = load_data(execution_date)
 
         for row in YT_data:
             insert_rows(cur, conn, schema, row)  # UPSERT
