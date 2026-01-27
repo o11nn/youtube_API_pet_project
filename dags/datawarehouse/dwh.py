@@ -6,18 +6,20 @@ from datawarehouse.data_transformation import transform_data
 
 import logging
 from airflow.decorators import task
+from airflow.operators.python import get_current_context
 
 logger = logging.getLogger(__name__)
 table = "yt_api"
 
 @task
-def staging_table(**context):
-    execution_date = context["execution_date"]
+def staging_table():
+    context = get_current_context()
+    logical_date = context["logical_date"]
     schema = "staging"
     conn, cur = get_conn_cursor()
 
     try:
-        YT_data = load_data(execution_date)
+        YT_data = load_data(logical_date)
 
         for row in YT_data:
             insert_rows(cur, conn, schema, row)  # UPSERT
