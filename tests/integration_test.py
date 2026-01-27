@@ -15,15 +15,18 @@ def test_youtube_api_response(airflow_variable):
         pytest.fail(f"Request to YouTube API falled: {e}")
 
 
-def test_youtube_api_response(airflow_variable):
+def test_youtube_channel_exists(airflow_variable):
     api_key = airflow_variable("api_key")
     channel_handle = airflow_variable("channel_handle")
     
     url = f"https://youtube.googleapis.com/youtube/v3/channels?part=contentDetails&forHandle={channel_handle}&key={api_key}"
 
-    response = requests.get(url)
-    items = response.json().get("items")
-    assert len(items) > 0
+    try:    
+        response = requests.get(url)
+        items = response.json().get("items", [])
+        assert len(items) > 0
+    except requests.RequestException as e:
+        pytest.fail(f"The channel is not found: {e}")
     
     
 def test_real_postgres_connection(real_postgres_connection):
