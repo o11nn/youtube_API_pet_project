@@ -24,10 +24,10 @@ jobs:
                       Dockerfile
                       requirements.txt
         - name: Set up Docker Buildx
-          if: steps.changed-files-build.outputs.any_files == "true"
+          if: steps.changed-files-build.outputs.any_changed == 'true'
           uses: docker/setup-buildx-action@v3
         - name: Log in DockerHub
-          if: steps.changed-files-build.outputs.any_files == "true"
+          if: steps.changed-files-build.outputs.any_changed == 'true'
           uses: docker/login-action@v3
           with:
             username: ${{ vars.DOCKERHUB_USERNAME }}
@@ -79,20 +79,20 @@ jobs:
                       include/**
                       docker-compose.yaml
         - name: Set up Docker Compose
-          if: steps.changed-files-tests.outputs.any_files == 'true'
+          if: steps.changed-files-tests.outputs.any_changed == 'true'
           run: docker compose up -dag
         - name: Run Unit and Integration tests
-          if: steps.changed-files-tests.outputs.any_files == 'true'
+          if: steps.changed-files-tests.outputs.any_changed == 'true'
           run: docker exec -t airflow-worker sh -c "pytest tests/ -v"
         - name: Run E2E tests
-          if: steps.changed-files-tests.outputs.any_files == 'true'
+          if: steps.changed-files-tests.outputs.any_changed == 'true'
           run: |
             DAG_NAMES=("produce_json" "update_db" "data_quality") 
             for DAG_NAME in "${DAG_NAMES[@]}"; do
               docker exec -t airflow-worker sh -c "airflow dags test $DAG"
             done
         - name: Tear down Docker Compose
-          if: steps.changed-files-tests.outputs.any_files == 'true'
+          if: steps.changed-files-tests.outputs.any_changed == 'true'
           run: docker compose down
 
       
