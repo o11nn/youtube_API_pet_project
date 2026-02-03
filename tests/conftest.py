@@ -46,10 +46,10 @@ def airflow_variable():
 @pytest.fixture
 def real_postgres_connection():
     dname = os.getenv("ELT_DATABASE_NAME")
-    user = os.getenv("ELT_DATABASE_USER")
+    user = os.getenv("ELT_DATABASE_USERNAME")
     password = os.getenv("ELT_DATABASE_PASSWORD")
-    host = os.getenv("ELT_DATABASE_HOST")
-    port = os.getenv("ELT_DATABASE_PORT")
+    host = os.getenv("POSTGRES_CONN_HOST")
+    port = os.getenv("POSTGRES_CONN_PORT")
 
     conn = None
 
