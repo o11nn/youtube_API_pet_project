@@ -1,4 +1,4 @@
-from datawarehouse.data_utils import get_conn_cursor, close_conn_cursor
+from datawarehouse.data_utils import get_conn_cursor, close_conn_cursor, create_schema, create_table
 from datawarehouse.data_loading import load_data
 from datawarehouse.data_modification import insert_rows, delete_rows
 from datawarehouse.data_transformation import transform_data
@@ -19,6 +19,10 @@ def staging_table():
     conn, cur = get_conn_cursor()
 
     try:
+        # Ensure schema and table exist before inserting
+        create_schema(schema)
+        create_table(schema)
+
         YT_data = load_data(logical_date)
 
         for row in YT_data:
@@ -46,6 +50,10 @@ def core_table():
     conn, cur = get_conn_cursor()
 
     try:
+        # Ensure schema and table exist before inserting
+        create_schema(schema)
+        create_table(schema)
+
         cur.execute(f"SELECT * FROM staging.{table}")
         staging_rows = cur.fetchall()
 

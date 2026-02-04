@@ -78,6 +78,7 @@ jobs:
                       dags/**
                       include/**
                       docker-compose.yaml
+                      requirements.txt
         - name: Set up Docker Compose
           if: steps.changed-files-tests.outputs.any_changed == 'true'
           run: docker compose up -d
@@ -87,7 +88,7 @@ jobs:
         - name: Run E2E tests
           if: steps.changed-files-tests.outputs.any_changed == 'true'
           run: |
-            DAG_NAMES=("produce_json" "update_db" "data_quality") 
+            DAG_NAMES=("produce_json" "update_db" "data_quality" "init_dwh") 
             for DAG_NAME in "${DAG_NAMES[@]}"; do
               docker exec -t airflow-worker sh -c "airflow dags test $DAG_NAME"
             done
