@@ -82,13 +82,9 @@ def update_rows(cur, conn, schema, row):
     
 def delete_rows(cur, conn, schema, ids_to_delete):
     try:
-        ids_to_delete = f""" ({', '.join(f"'{id}'" for id in ids_to_delete)}) """
-        
         cur.execute(
-            f"""
-            DELETE FROM {schema}.{table}
-            WHERE "Video_ID" IN {ids_to_delete};
-            """          
+            f'DELETE FROM {schema}.{table} WHERE "Video_ID" = ANY(%s)',
+            (list(ids_to_delete),)
         )
         
         conn.commit()

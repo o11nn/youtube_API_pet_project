@@ -10,15 +10,18 @@ from datetime import date
 from airflow.decorators import task
 from airflow.models import Variable
 
-API_KEY = Variable.get("API_KEY")
-CHANNEL_HANDLE = Variable.get("CHANNEL_HANDLE")
-max_result = 50
-
+def my_task_function():
+    return {
+        "API_KEY": Variable.get("API_KEY"),
+        "CHANNEL_HANDLE": Variable.get("CHANNEL_HANDLE"),
+        "MAX_RESULT": 50,
+    }
 @task
 
 def get_playlist_id():
     try:
-        url = f"https://youtube.googleapis.com/youtube/v3/channels?part=contentDetails&forHandle={CHANNEL_HANDLE}&key={API_KEY}"
+        cfg = my_task_function()
+        url = f"https://youtube.googleapis.com/youtube/v3/channels?part=contentDetails&forHandle={cfg['CHANNEL_HANDLE']}&key={cfg['API_KEY']}"
 
         response = requests.get(url)
         response.raise_for_status()
@@ -39,9 +42,10 @@ def get_playlist_id():
         raise e
 @task
 def get_video_ids(playlistId):
+    cfg = my_task_function()
     video_ids = []
     page_token = None
-    base_url = f'https://youtube.googleapis.com/youtube/v3/playlistItems?part=contentDetails&maxResults={max_result}&playlistId={playlistId}&key={API_KEY}'
+    base_url = f'https://youtube.googleapis.com/youtube/v3/playlistItems?part=contentDetails&maxResults={cfg["MAX_RESULT"]}&playlistId={playlistId}&key={cfg["API_KEY"]}'
     try:
         while True:
             url = base_url
@@ -61,16 +65,17 @@ def get_video_ids(playlistId):
         raise e
 @task
 def extract_video_data(video_ids):
+    cfg = my_task_function()
     extracted_data =[]
 
     def batch_list(video_id_lst, batch_size):
         for video_id in range(0, len(video_id_lst), batch_size):
             yield video_id_lst[video_id:video_id + batch_size]
     try:
-        for batch in batch_list(video_ids, max_result):
+        for batch in batch_list(video_ids, cfg["MAX_RESULT"]):
             video_ids_str = ','.join(batch)
 
-            url = f'https://youtube.googleapis.com/youtube/v3/videos?part=contentDetails&part=snippet&part=statistics&id={video_ids_str}&key={API_KEY}'
+            url = f'https://youtube.googleapis.com/youtube/v3/videos?part=contentDetails&part=snippet&part=statistics&id={video_ids_str}&key={cfg["API_KEY"]}'
 
             response = requests.get(url)
             response.raise_for_status()

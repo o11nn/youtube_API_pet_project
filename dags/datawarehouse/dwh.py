@@ -20,8 +20,8 @@ def staging_table():
 
     try:
         # Ensure schema and table exist before inserting
-        create_schema(schema)
-        create_table(schema)
+        create_schema(schema, conn, cur)
+        create_table(schema, conn, cur)
 
         YT_data = load_data(logical_date)
 
@@ -51,8 +51,8 @@ def core_table():
 
     try:
         # Ensure schema and table exist before inserting
-        create_schema(schema)
-        create_table(schema)
+        create_schema(schema, conn, cur)
+        create_table(schema, conn, cur)
 
         cur.execute(f"SELECT * FROM staging.{table}")
         staging_rows = cur.fetchall()
